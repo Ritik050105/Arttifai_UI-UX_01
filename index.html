@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoCart - Buy & Sell Cars Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .logo:hover i {
+            transform: rotate(-15deg);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 0.5rem;
+            width: 200px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--secondary);
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Page Container */
+        .page-container {
+            display: none;
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .page-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1567899378494-47b22b6a75eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            animation: slideInFromTop 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            animation: slideInFromBottom 0.8s ease-out;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        /* Featured Cars */
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            margin: 0.5rem auto;
+            border-radius: 2px;
+            animation: expandLine 1s ease-out;
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .car-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .car-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .car-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .car-card:hover .car-image img {
+            transform: scale(1.1);
+        }
+
+        .car-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        .car-details {
+            padding: 1.5rem;
+        }
+
+        .car-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .car-card:hover .car-title {
+            color: var(--primary);
+        }
+
+        .car-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .car-specs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .car-spec {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--secondary);
+        }
+
+        .car-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Filter Section */
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            animation: slideInFromTop 0.8s ease-out;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            background: white;
+            transition: var(--transition);
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* 3D Viewer Demo */
+        .viewer-section {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .viewer-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .car-viewer {
+            width: 100%;
+            height: 400px;
+            background: #2d3748;
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
+        }
+
+        .car-viewer:active {
+            cursor: grabbing;
+        }
+
+        .viewer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background: var(--gray-100);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2);
+            color: var(--accent);
+        }
+
+        /* Forms */
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .comparison-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background-color: var(--gray-100);
+        }
+
+        /* Dashboard Styles */
+.dashboard {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+}
+
+.sidebar {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: fit-content;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--dark);
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+.sidebar-menu i {
+    width: 20px;
+    text-align: center;
+}
+
+.dashboard-content {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.dashboard-tab {
+    display: none;
+}
+
+.dashboard-tab.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--gray-100);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--secondary);
+    font-size: 0.9rem;
+}
+
+.charts-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.chart-placeholder {
+    height: 300px;
+    background: var(--gray-100);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+    font-style: italic;
+}
+
+.activity-feed {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.activity-time {
+    color: var(--secondary);
+    font-size: 0.85rem;
+}
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromTop {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFromBottom {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expandLine {
+            from { width: 0; }
+            to { width: 80px; }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .viewer-controls {
+                flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0 1rem;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+        }
+            
+            .viewer-controls .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .car-actions {
+                flex-direction: column;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                font-size: 0.8rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo" data-page="home">
+                    <i class="fas fa-car"></i>
+                    <span>AutoCart</span>
+                </a>
+                
+                <nav>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="buy">Buy Car</a></li>
+                        <li><a href="#" data-page="sell">Sell Car</a></li>
+                        <li><a href="#" data-page="compare">Compare</a></li>
+                        <li><a href="#" data-page="dashboard">Dashboard</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search cars...">
+                    </div>
+                    
+                    <button class="icon-btn" id="wishlist-btn">
+                        <i class="far fa-heart"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    
+                    <button class="icon-btn" id="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="badge">1</span>
+                    </button>
+                    
+                    <button class="btn btn-outline" id="login-btn">
+                        <i class="fas fa-user"></i>
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home-page" class="page-container active">
+        <!-- Hero Section -->
+        <section class="hero" style="background-image: url('https://images.wallpapersden.com/image/download/lamborghini_bGdsbmiUmZqaraWkpJRobWllrWdma2U.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Find Your Dream Car Today</h1>
+                    <p>Browse thousands of new and used cars with our advanced search tools and 360° viewing experience</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" data-page="buy">
+                            <i class="fas fa-car"></i>
+                            Browse Inventory
+                        </button>
+                        <button class="btn btn-outline" style="background: rgba(255, 255, 255, 0.2); color: white; border-color: white;" data-page="sell">
+                            <i class="fas fa-upload"></i>
+                            Sell Your Car
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Cars -->
+        <section class="container">
+            <h2 class="section-title">Featured Vehicles</h2>
+            
+            <div class="cars-grid">
+                <div class="car-card">
+                    <div class="car-image">
+                        <img src="https://images6.alphacoders.com/115/1154171.jpg" alt="Tesla Model S">
+                        <div class="car-badge">New</div>
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Tesla Model S</h3>
+                        <div class="car-price">$79,990</div>
+                        <div class="car-specs">
+                            <div class="car-spec">
+                                <i class="fas fa-gas-pump"></i>
+                                <span>Electric</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-road"></i>
+                                <span>396 mi</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>1.9s 0-60</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-car"></i>
+                                <span>Sedan</span>
+                            </div>
+                        </div>
+                        <div class="car-actions">
+                            <button class="btn btn-outline wishlist-btn" style="flex: 1;">
+                                <i class="far fa-heart"></i>
+                                Save
+                            </button>
+                            <button class="btn btn-primary view-details-btn" style="flex: 2;">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="car-card">
+                    <div class="car-image">
+                        <img src="https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="BMW X5">
+                        <div class="car-badge">Used</div>
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">BMW X5</h3>
+                        <div class="car-price">$54,800</div>
+                        <div class="car-specs">
+                            <div class="car-spec">
+                                <i class="fas fa-gas-pump"></i>
+                                <span>Petrol</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-road"></i>
+                                <span>22 mpg</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>4.8s 0-60</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-car"></i>
+                                <span>SUV</span>
+                            </div>
+                        </div>
+                        <div class="car-actions">
+                            <button class="btn btn-outline wishlist-btn" style="flex: 1;">
+                                <i class="far fa-heart"></i>
+                                Save
+                            </button>
+                            <button class="btn btn-primary view-details-btn" style="flex: 2;">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="car-card">
+                    <div class="car-image">
+                        <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2025&q=80" alt="Audi Q7">
+                        <div class="car-badge">Certified</div>
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">Audi Q7</h3>
+                        <div class="car-price">$68,400</div>
+                        <div class="car-specs">
+                            <div class="car-spec">
+                                <i class="fas fa-gas-pump"></i>
+                                <span>Diesel</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-road"></i>
+                                <span>28 mpg</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>5.5s 0-60</span>
+                            </div>
+                            <div class="car-spec">
+                                <i class="fas fa-car"></i>
+                                <span>SUV</span>
+                            </div>
+                        </div>
+                        <div class="car-actions">
+                            <button class="btn btn-outline wishlist-btn" style="flex: 1;">
+                                <i class="far fa-heart"></i>
+                                Save
+                            </button>
+                            <button class="btn btn-primary view-details-btn" style="flex: 2;">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D Viewer Section -->
+        <section class="viewer-section">
+            <div class="container">
+                <h2 class="section-title" style="color: white;">Experience Cars in 360°</h2>
+                <p>Our interactive 3D viewer lets you explore every detail of your favorite cars from the comfort of your home</p>
+                
+                <div class="viewer-container">
+                    <div class="car-viewer" id="car-viewer">
+                        <!-- This would be replaced with an actual 3D viewer in production -->
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-400);">
+                            <div style="text-align: center;">
+                                <i class="fas fa-360-degrees" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                                <p>Interactive 360° car viewer would appear here</p>
+                                <p class="viewer-hint">Click and drag to rotate the car</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="viewer-controls">
+                        <button class="btn btn-outline" style="background: rgba(255, 255, 255, 0.1); color: white; border-color: white;">
+                            <i class="fas fa-rotate-left"></i>
+                            Reset View
+                        </button>
+                        <button class="btn btn-outline" id="interior-btn" style="background: rgba(255, 255, 255, 0.1); color: white; border-color: white;">
+                            <i class="fas fa-chair"></i>
+                            View Interior
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-vr-cardboard"></i>
+                            VR Mode
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose AutoCart</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Verified Listings</h3>
+                        <p>Every car undergoes a 150-point inspection to ensure quality and reliability.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>Best Price Guarantee</h3>
+                        <p>We'll match any competitor's price on identical vehicles.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3>Extended Warranty</h3>
+                        <p>Comprehensive warranty options available for all vehicles.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+                        <h3>Home Delivery</h3>
+                        <p>Get your car delivered to your doorstep anywhere in the country.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Buy Car Page -->
+    <div id="buy-page" class="page-container">
+        <div class="container">
+            <h2 class="section-title">Find Your Perfect Car</h2>
+            
+            <div class="filters">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="brand">Brand</label>
+                        <select id="brand">
+                            <option value="">All Brands</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="honda">Honda</option>
+                            <option value="bmw">BMW</option>
+                            <option value="mercedes">Mercedes</option>
+                            <option value="audi">Audi</option>
+                            <option value="tesla">Tesla</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="price">Price Range</label>
+                        <select id="price">
+                            <option value="">Any Price</option>
+                            <option value="0-10000">Under $10,000</option>
+                            <option value="10000-20000">$10,000 - $20,000</option>
+                            <option value="20000-30000">$20,000 - $30,000</option>
+                            <option value="30000-50000">$30,000 - $50,000</option>
+                            <option value="50000+">Over $50,000</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="type">Vehicle Type</label>
+                        <select id="type">
+                            <option value="">All Types</option>
+                            <option value="suv">SUV</option>
+                            <option value="sedan">Sedan</option>
+                            <option value="hatchback">Hatchback</option>
+                            <option value="sports">Sports</option>
+                            <option value="truck">Truck</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="year">Year</label>
+                        <select id="year">
+                            <option value="">Any Year</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="fuel-type">Fuel Type</label>
+                        <select id="fuel-type">
+                            <option value="">Any Fuel Type</option>
+                            <option value="petrol">Petrol</option>
+                            <option value="diesel">Diesel</option>
+                            <option value="electric">Electric</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="transmission">Transmission</label>
+                        <select id="transmission">
+                            <option value="">Any Transmission</option>
+                            <option value="automatic">Automatic</option>
+                            <option value="manual">Manual</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="mileage">Max Mileage</label>
+                        <select id="mileage">
+                            <option value="">Any Mileage</option>
+                            <option value="10000">Under 10,000</option>
+                            <option value="30000">Under 30,000</option>
+                            <option value="50000">Under 50,000</option>
+                            <option value="75000">Under 75,000</option>
+                            <option value="100000">Under 100,000</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="color">Color</label>
+                        <select id="color">
+                            <option value="">Any Color</option>
+                            <option value="black">Black</option>
+                            <option value="white">White</option>
+                            <option value="silver">Silver</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+            </div>
+            
+            <div class="cars-grid">
+                <!-- Car listings will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Car Page -->
+    <div id="sell-page" class="page-container">
+        <div class="container">
+            <h2 class="section-title">Sell Your Car</h2>
+            
+            <div class="form-container">
+                <form id="sell-car-form">
+                    <div class="form-group">
+                        <label for="car-make">Make</label>
+                        <input type="text" id="car-make" placeholder="e.g. Toyota" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-model">Model</label>
+                        <input type="text" id="car-model" placeholder="e.g. Camry" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-year">Year</label>
+                        <input type="number" id="car-year" min="1990" max="2023" placeholder="e.g. 2020" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-mileage">Mileage</label>
+                        <input type="number" id="car-mileage" placeholder="e.g. 45000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-price">Asking Price ($)</label>
+                        <input type="number" id="car-price" placeholder="e.g. 25000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-location">Location</label>
+                        <input type="text" id="car-location" placeholder="e.g. New York, NY" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-description">Description</label>
+                        <textarea id="car-description" rows="4" placeholder="Describe your vehicle's condition, features, and any additional information"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="car-images">Upload Photos (Max 10)</label>
+                        <input type="file" id="car-images" multiple accept="image/*">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-upload"></i>
+                        List My Car
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compare Page -->
+    <div id="compare-page" class="page-container">
+        <div class="container">
+            <h2 class="section-title">Compare Cars</h2>
+            
+            <div class="filters">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="compare-car1">Select First Car</label>
+                        <select id="compare-car1">
+                            <option value="">Select a car</option>
+                            <option value="tesla-model-s">Tesla Model S</option>
+                            <option value="bmw-x5">BMW X5</option>
+                            <option value="audi-q7">Audi Q7</option>
+                            <option value="toyota-camry">Toyota Camry</option>
+                            <option value="honda-civic">Honda Civic</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="compare-car2">Select Second Car</label>
+                        <select id="compare-car2">
+                            <option value="">Select a car</option>
+                            <option value="tesla-model-s">Tesla Model S</option>
+                            <option value="bmw-x5">BMW X5</option>
+                            <option value="audi-q7">Audi Q7</option>
+                            <option value="toyota-camry">Toyota Camry</option>
+                            <option value="honda-civic">Honda Civic</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-exchange-alt"></i>
+                    Compare Cars
+                </button>
+            </div>
+            
+            <div class="comparison-result">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Specification</th>
+                            <th>Tesla Model S</th>
+                            <th>BMW X5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Price</td>
+                            <td>$79,990</td>
+                            <td>$54,800</td>
+                        </tr>
+                        <tr>
+                            <td>Fuel Type</td>
+                            <td>Electric</td>
+                            <td>Petrol</td>
+                        </tr>
+                        <tr>
+                            <td>MPG/Range</td>
+                            <td>396 miles</td>
+                            <td>22 mpg</td>
+                        </tr>
+                        <tr>
+                            <td>0-60 mph</td>
+                            <td>1.99 seconds</td>
+                            <td>4.8 seconds</td>
+                        </tr>
+                        <tr>
+                            <td>Seating Capacity</td>
+                            <td>5</td>
+                            <td>7</td>
+                        </tr>
+                        <tr>
+                            <td>Warranty</td>
+                            <td>8 years</td>
+                            <td>4 years</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+<div id="dashboard-page" class="page-container">
+    <div class="container">
+        <h2 class="section-title">My Dashboard</h2>
+        
+        <div class="dashboard">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active" data-dashboard-tab="overview"><i class="fas fa-home"></i> Overview</a></li>
+                    <li><a href="#" data-dashboard-tab="listings"><i class="fas fa-car"></i> My Listings</a></li>
+                    <li><a href="#" data-dashboard-tab="saved"><i class="far fa-heart"></i> Saved Cars</a></li>
+                    <li><a href="#" data-dashboard-tab="purchases"><i class="fas fa-shopping-cart"></i> Purchases</a></li>
+                    <li><a href="#" data-dashboard-tab="sales"><i class="fas fa-dollar-sign"></i> Sales</a></li>
+                    <li><a href="#" data-dashboard-tab="notifications"><i class="fas fa-bell"></i> Notifications <span class="badge">3</span></a></li>
+                    <li><a href="#" data-dashboard-tab="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            
+            <div class="dashboard-content">
+                <!-- Overview Tab -->
+                <div class="dashboard-tab active" id="overview-tab">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-value">1,248</div>
+                            <div class="stat-label">Profile Views</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Active Listings</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-value">7</div>
+                            <div class="stat-label">Cars Purchased</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Cars Sold</div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <h3>Sales Performance</h3>
+                            <div class="chart-placeholder" id="sales-chart">
+                                Sales chart will be rendered here
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Traffic Sources</h3>
+                            <div class="chart-placeholder" id="traffic-chart">
+                                Traffic chart will be rendered here
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-feed">
+                        <h3>Recent Activity</h3>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Someone viewed your BMW X5 listing</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Your Tesla Model S was added to a wishlist</div>
+                                <div class="activity-time">5 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">You sold your Audi Q7 for $68,400</div>
+                                <div class="activity-time">1 day ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-comment"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">New message from a potential buyer</div>
+                                <div class="activity-time">2 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Listings Tab -->
+                <div class="dashboard-tab" id="listings-tab">
+                    <h3>Your Listings</h3>
+                    <div class="cars-grid">
+                        <div class="car-card">
+                            <div class="car-image">
+                                <img src="https://images6.alphacoders.com/115/1154171.jpg" alt="Tesla Model S">
+                                <div class="car-badge">Active</div>
+                            </div>
+                            <div class="car-details">
+                                <h3 class="car-title">Tesla Model S</h3>
+                                <div class="car-price">$79,990</div>
+                                <div class="car-specs">
+                                    <div class="car-spec">
+                                        <i class="fas fa-gas-pump"></i>
+                                        <span>Electric</span>
+                                    </div>
+                                    <div class="car-spec">
+                                        <i class="fas fa-road"></i>
+                                        <span>396 mi</span>
+                                    </div>
+                                </div>
+                                <div class="car-actions">
+                                    <button class="btn btn-outline" style="flex: 1;">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-primary" style="flex: 2;">
+                                        <i class="fas fa-chart-line"></i>
+                                        View Stats
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="car-card">
+                            <div class="car-image">
+                                <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2025&q=80" alt="Audi Q7">
+                                <div class="car-badge">Sold</div>
+                            </div>
+                            <div class="car-details">
+                                <h3 class="car-title">Audi Q7</h3>
+                                <div class="car-price">$68,400</div>
+                                <div class="car-specs">
+                                    <div class="car-spec">
+                                        <i class="fas fa-gas-pump"></i>
+                                        <span>Diesel</span>
+                                    </div>
+                                    <div class="car-spec">
+                                        <i class="fas fa-road"></i>
+                                        <span>28 mpg</span>
+                                    </div>
+                                </div>
+                                <div class="car-actions">
+                                    <button class="btn btn-outline" style="flex: 1;">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-primary" style="flex: 2;">
+                                        <i class="fas fa-chart-line"></i>
+                                        View Stats
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 1.5rem;">
+                        <i class="fas fa-plus"></i>
+                        Add New Listing
+                    </button>
+                </div>
+                
+                <!-- Saved Cars Tab -->
+                <div class="dashboard-tab" id="saved-tab">
+                    <h3>Your Saved Cars</h3>
+                    <div class="cars-grid">
+                        <div class="car-card">
+                            <div class="car-image">
+                                <img src="https://images6.alphacoders.com/115/1154171.jpg" alt="Tesla Model S">
+                                <div class="car-badge">Saved</div>
+                            </div>
+                            <div class="car-details">
+                                <h3 class="car-title">Tesla Model S</h3>
+                                <div class="car-price">$79,990</div>
+                                <div class="car-actions">
+                                    <button class="btn btn-outline" style="flex: 1;">
+                                        <i class="far fa-trash-alt"></i>
+                                        Remove
+                                    </button>
+                                    <button class="btn btn-primary" style="flex: 2;">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="car-card">
+                            <div class="car-image">
+                                <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2025&q=80" alt="Audi Q7">
+                                <div class="car-badge">Saved</div>
+                            </div>
+                            <div class="car-details">
+                                <h3 class="car-title">Audi Q7</h3>
+                                <div class="car-price">$68,400</div>
+                                <div class="car-actions">
+                                    <button class="btn btn-outline" style="flex: 1;">
+                                        <i class="far fa-trash-alt"></i>
+                                        Remove
+                                    </button>
+                                    <button class="btn btn-primary" style="flex: 2;">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other tabs would go here with similar structure -->
+                <div class="dashboard-tab" id="purchases-tab">
+                    <h3>Your Purchase History</h3>
+                    <p>You haven't made any purchases yet.</p>
+                </div>
+                
+                <div class="dashboard-tab" id="sales-tab">
+                    <h3>Your Sales History</h3>
+                    <p>You haven't sold any cars yet.</p>
+                </div>
+                
+                <div class="dashboard-tab" id="notifications-tab">
+                    <h3>Notifications</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Your listing for Tesla Model S is getting attention</div>
+                                <div class="activity-time">Today, 10:30 AM</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">New cars matching your preferences are available</div>
+                                <div class="activity-time">Yesterday, 3:45 PM</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Your profile has been viewed 15 times this week</div>
+                                <div class="activity-time">2 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-tab" id="settings-tab">
+                    <h3>Account Settings</h3>
+                    <div class="form-container">
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label for="profile-name">Full Name</label>
+                                <input type="text" id="profile-name" value="John Doe" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-email">Email Address</label>
+                                <input type="email" id="profile-email" value="john.doe@example.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-phone">Phone Number</label>
+                                <input type="tel" id="profile-phone" value="+1 (555) 123-4567">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-location">Location</label>
+                                <input type="text" id="profile-location" value="New York, NY">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-password">New Password</label>
+                                <input type="password" id="profile-password" placeholder="Enter new password">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-password-confirm">Confirm Password</label>
+                                <input type="password" id="profile-password-confirm" placeholder="Confirm new password">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>AutoCart</h3>
+                    <p>The modern way to buy and sell cars online with confidence and convenience.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="buy">Buy a Car</a></li>
+                        <li><a href="#" data-page="sell">Sell Your Car</a></li>
+                        <li><a href="#" data-page="compare">Car Comparison</a></li>
+                        <li><a href="#" data-page="dashboard">Financing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Customer Support</h3>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping & Delivery</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get updates on new arrivals and special offers</p>
+                    <div class="search-bar" style="margin-top: 1rem;">
+                        <input type="email" placeholder="Your email address">
+                        <button class="icon-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 AutoCart. All rights reserved. ARTTIFAI TECH</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Login to Your Account</h2>
+            <form>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Your email address">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Your password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Don't have an account? <a href="#" style="color: var(--primary);">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Car Details Modal -->
+    <div class="modal" id="details-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Tesla Model S</h2>
+            <img src="https://images6.alphacoders.com/115/1154171.jpg" alt="Tesla Model S" style="width: 100%; border-radius: var(--radius); margin: 1rem 0;">
+            <div class="car-price">$79,990</div>
+            <p>The Tesla Model S is a full-size all-electric five-door luxury liftback car produced by Tesla, Inc. It was introduced on June 22, 2012. It received a major refresh in June 2021.</p>
+            <div class="car-specs" style="grid-template-columns: 1fr; margin: 1rem 0;">
+                <div class="car-spec">
+                    <i class="fas fa-gas-pump"></i>
+                    <span><strong>Fuel Type:</strong> Electric</span>
+                </div>
+                <div class="car-spec">
+                    <i class="fas fa-road"></i>
+                    <span><strong>Range:</strong> 396 miles</span>
+                </div>
+                <div class="car-spec">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span><strong>Acceleration:</strong> 0-60 mph in 1.99 seconds</span>
+                </div>
+                <div class="car-spec">
+                    <i class="fas fa-car"></i>
+                    <span><strong>Body Style:</strong> Sedan</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-shopping-cart"></i>
+                Purchase Now
+            </button>
+            <button class="btn btn-outline" style="width: 100%; margin-top: 0.5rem;">
+                <i class="fas fa-calendar-alt"></i>
+                Schedule Test Drive
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced interactivity for the website
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const loginBtn = document.getElementById('login-btn');
+            const loginModal = document.getElementById('login-modal');
+            const detailsModal = document.getElementById('details-modal');
+            const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
+            const closeModalBtns = document.querySelectorAll('.close-modal');
+            const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+            const header = document.querySelector('header');
+            const carViewer = document.getElementById('car-viewer');
+            const interiorBtn = document.getElementById('interior-btn');
+            const pageLinks = document.querySelectorAll('[data-page]');
+            const pageContainers = document.querySelectorAll('.page-container');
+            
+            // Navigation functionality
+            pageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // Hide all pages
+                    pageContainers.forEach(page => {
+                        page.classList.remove('active');
+                    });
+                    
+                    // Show target page
+                    document.getElementById(`${targetPage}-page`).classList.add('active');
+                    
+                    // Update URL hash
+                    window.location.hash = targetPage;
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                });
+            });
+            
+            // Check URL hash on load
+            if (window.location.hash) {
+                const targetPage = window.location.hash.substring(1);
+                const targetElement = document.getElementById(`${targetPage}-page`);
+                
+                if (targetElement) {
+                    pageContainers.forEach(page => {
+                        page.classList.remove('active');
+                    });
+                    
+                    targetElement.classList.add('active');
+                }
+            }
+            
+            // Login modal functionality
+            loginBtn.addEventListener('click', function() {
+                loginModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // View details modal functionality
+            viewDetailsBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    detailsModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Close modal functionality
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    loginModal.classList.remove('active');
+                    detailsModal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+            
+            // Close modal when clicking outside
+            [loginModal, detailsModal].forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+            
+            // Wishlist functionality
+            wishlistBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (icon.classList.contains('far')) {
+                        icon.classList.replace('far', 'fas');
+                        this.style.color = '#ef4444';
+                    } else {
+                        icon.classList.replace('fas', 'far');
+                        this.style.color = '';
+                    }
+                });
+            });
+            
+            // Header shadow on scroll
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 10) {
+                    header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.boxShadow = 'var(--shadow)';
+                }
+            });
+            
+            // Simulate 3D car viewer interaction
+            let isRotating = false;
+            let startX, startY;
+            let currentX = 0;
+            let currentY = 0;
+            
+            carViewer.addEventListener('mousedown', function(e) {
+                isRotating = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                carViewer.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isRotating = false;
+                carViewer.style.cursor = 'grab';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isRotating) return;
+                
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                currentX += deltaX * 0.5;
+                currentY += deltaY * 0.5;
+                
+                carViewer.querySelector('div').style.transform = `rotateY(${currentX}deg) rotateX(${currentY}deg)`;
+                
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+            
+            // Interior view toggle
+            let isInteriorView = false;
+            interiorBtn.addEventListener('click', function() {
+                isInteriorView = !isInteriorView;
+                
+                if (isInteriorView) {
+                    carViewer.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-400); transform: rotateY(${currentX}deg) rotateX(${currentY}deg);">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chair" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                                <p>Car interior view would appear here</p>
+                                <p class="viewer-hint">Click and drag to look around</p>
+                            </div>
+                        </div>
+                    `;
+                    interiorBtn.innerHTML = '<i class="fas fa-car"></i> View Exterior';
+                } else {
+                    carViewer.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-400); transform: rotateY(${currentX}deg) rotateX(${currentY}deg);">
+                            <div style="text-align: center;">
+                                <i class="fas fa-360-degrees" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                                <p>Interactive 360° car viewer would appear here</p>
+                                <p class="viewer-hint">Click and drag to rotate the car</p>
+                            </div>
+                        </div>
+                    `;
+                    interiorBtn.innerHTML = '<i class="fas fa-chair"></i> View Interior';
+                }
+            });
+            // Dashboard interactivity
+document.addEventListener('DOMContentLoaded', function() {
+    // Dashboard tab switching
+    const dashboardTabs = document.querySelectorAll('[data-dashboard-tab]');
+    const tabPanes = document.querySelectorAll('.dashboard-tab');
+    
+    dashboardTabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetTab = this.getAttribute('data-dashboard-tab');
+            
+            // Update active tab
+            dashboardTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show target tab content
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            document.getElementById(`${targetTab}-tab`).classList.add('active');
+        });
+    });
+    
+    // Interactive stats cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        card.addEventListener('click', function() {
+            this.classList.toggle('highlighted');
+            
+            // Animate the stat value
+            const statValue = this.querySelector('.stat-value');
+            const originalValue = statValue.textContent;
+            
+            statValue.style.transform = 'scale(1.2)';
+            statValue.style.color = 'var(--primary)';
+            
+            setTimeout(() => {
+                statValue.style.transform = 'scale(1)';
+                statValue.style.color = '';
+            }, 300);
+        });
+    });
+    
+    // Simulate chart rendering
+    const salesChart = document.getElementById('sales-chart');
+    const trafficChart = document.getElementById('traffic-chart');
+    
+    // Simulate chart loading
+    setTimeout(() => {
+        salesChart.innerHTML = `
+            <div style="padding: 1rem; text-align: center;">
+                <div style="display: flex; height: 200px; align-items: flex-end; justify-content: center; gap: 10px;">
+                    <div style="width: 30px; background: var(--primary); height: 40%;"></div>
+                    <div style="width: 30px; background: var(--primary); height: 60%;"></div>
+                    <div style="width: 30px; background: var(--primary); height: 80%;"></div>
+                    <div style="width: 30px; background: var(--primary); height: 100%;"></div>
+                    <div style="width: 30px; background: var(--primary); height: 70%;"></div>
+                    <div style="width: 30px; background: var(--primary); height: 50%;"></div>
+                </div>
+                <p style="margin-top: 1rem; color: var(--secondary);">Monthly sales performance</p>
+            </div>
+        `;
+        
+        trafficChart.innerHTML = `
+            <div style="padding: 1rem; text-align: center;">
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(
+                    var(--primary) 0% 40%, 
+                    var(--accent) 40% 70%, 
+                    var(--success) 70% 100%
+                ); margin: 0 auto;"></div>
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                    <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--primary);"></span> Direct</div>
+                    <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--accent);"></span> Organic</div>
+                    <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--success);"></span> Social</div>
+                </div>
+            </div>
+        `;
+    }, 1000);
+    
+    // Interactive activity feed
+    const activityItems = document.querySelectorAll('.activity-item');
+    activityItems.forEach(item => {
+        item.addEventListener('click', function() {
+            this.style.backgroundColor = 'var(--gray-100)';
+            
+            setTimeout(() => {
+                this.style.backgroundColor = '';
+            }, 300);
+        });
+    });
+    
+    // Interactive car cards in dashboard
+    const carCards = document.querySelectorAll('.car-card');
+    carCards.forEach(card => {
+        const removeBtn = card.querySelector('.btn-outline');
+        const actionBtn = card.querySelector('.btn-primary');
+        
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(100px)';
+                
+                setTimeout(() => {
+                    card.remove();
+                }, 300);
+            });
+        }
+        
+        if (actionBtn) {
+            actionBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> Success';
+                this.style.background = 'var(--success)';
+                this.style.borderColor = 'var(--success)';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.background = '';
+                    this.style.borderColor = '';
+                }, 2000);
+            });
+        }
+        
+        card.addEventListener('click', function() {
+            this.style.boxShadow = '0 0 0 3px var(--primary)';
+            
+            setTimeout(() => {
+                this.style.boxShadow = '';
+            }, 300);
+        });
+    });
+    
+    // Simulate real-time updates
+    setInterval(() => {
+        // Randomly update a stat value
+        const randomStat = Math.floor(Math.random() * statCards.length);
+        const statValue = statCards[randomStat].querySelector('.stat-value');
+        const currentValue = parseInt(statValue.textContent.replace(/,/g, ''));
+        
+        // Small random change
+        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        const newValue = Math.max(0, currentValue + change);
+        
+        statValue.textContent = newValue.toLocaleString();
+        
+        // Add a visual indicator of the change
+        const changeIndicator = document.createElement('span');
+        changeIndicator.style.marginLeft = '5px';
+        changeIndicator.style.fontSize = '0.8em';
+        changeIndicator.style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
+        changeIndicator.textContent = change >= 0 ? `+${change}` : change;
+        
+        statValue.appendChild(changeIndicator);
+        
+        setTimeout(() => {
+            changeIndicator.remove();
+        }, 1000);
+    }, 5000);
+});
+            // Filter functionality
+            const filterSelects = document.querySelectorAll('select');
+            filterSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    // In a real application, this would filter the car listings
+                    const cars = document.querySelectorAll('.car-card');
+                    cars.forEach(car => {
+                        car.style.opacity = '0.5';
+                        car.style.transform = 'scale(0.95)';
+                    });
+                    
+                    // Simulate filtering with a timeout
+                    setTimeout(() => {
+                        cars.forEach(car => {
+                            car.style.opacity = '1';
+                            car.style.transform = 'scale(1)';
+                        });
+                    }, 500);
+                });
+            });
+            
+            // Form submission
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Form submitted successfully!');
+                });
+            });
+            
+            // Animate elements on scroll
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.car-card, .feature-card, .section-title');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.animation = 'fadeIn 0.8s ease-out forwards';
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', animateOnScroll);
+            // Initial call to check elements in view
+            animateOnScroll();
+            
+            // Populate buy page with cars
+            const buyPage = document.getElementById('buy-page');
+            const carsGrid = buyPage.querySelector('.cars-grid');
+            
+            const carsData = [
+                {
+                    image: 'https://images6.alphacoders.com/115/1154171.jpg',
+                    title: 'Tesla Model S',
+                    price: '$79,990',
+                    badge: 'New',
+                    specs: [
+                        { icon: 'fas fa-gas-pump', text: 'Electric' },
+                        { icon: 'fas fa-road', text: '396 mi' },
+                        { icon: 'fas fa-tachometer-alt', text: '1.9s 0-60' },
+                        { icon: 'fas fa-car', text: 'Sedan' }
+                    ]
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                    title: 'BMW X5',
+                    price: '$54,800',
+                    badge: 'Used',
+                    specs: [
+                        { icon: 'fas fa-gas-pump', text: 'Petrol' },
+                        { icon: 'fas fa-road', text: '22 mpg' },
+                        { icon: 'fas fa-tachometer-alt', text: '4.8s 0-60' },
+                        { icon: 'fas fa-car', text: 'SUV' }
+                    ]
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2025&q=80',
+                    title: 'Audi Q7',
+                    price: '$68,400',
+                    badge: 'Certified',
+                    specs: [
+                        { icon: 'fas fa-gas-pump', text: 'Diesel' },
+                        { icon: 'fas fa-road', text: '28 mpg' },
+                        { icon: 'fas fa-tachometer-alt', text: '5.5s 0-60' },
+                        { icon: 'fas fa-car', text: 'SUV' }
+                    ]
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80',
+                    title: 'Toyota Camry',
+                    price: '$26,420',
+                    badge: 'New',
+                    specs: [
+                        { icon: 'fas fa-gas-pump', text: 'Hybrid' },
+                        { icon: 'fas fa-road', text: '52 mpg' },
+                        { icon: 'fas fa-tachometer-alt', text: '7.9s 0-60' },
+                        { icon: 'fas fa-car', text: 'Sedan' }
+                    ]
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80',
+                    title: 'Honda Civic',
+                    price: '$23,950',
+                    badge: 'New',
+                    specs: [
+                        { icon: 'fas fa-gas-pump', text: 'Petrol' },
+                        { icon: 'fas fa-road', text: '36 mpg' },
+                        { icon: 'fas fa-tachometer-alt', text: '7.5s 0-60' },
+                        { icon: 'fas fa-car', text: 'Sedan' }
+                    ]
+                },
+                {
+                    image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                    title: 'Ford Mustang',
+                    price: '$43,080',
+                    badge: 'New',
+                    specs: [
+                        { icon: 'fas fa-gas-pump', text: 'Petrol' },
+                        { icon: 'fas fa-road', text: '21 mpg' },
+                        { icon: 'fas fa-tachometer-alt', text: '4.3s 0-60' },
+                        { icon: 'fas fa-car', text: 'Sports' }
+                    ]
+                }
+            ];
+            
+            carsData.forEach(car => {
+                const carCard = document.createElement('div');
+                carCard.className = 'car-card';
+                carCard.innerHTML = `
+                    <div class="car-image">
+                        <img src="${car.image}" alt="${car.title}">
+                        <div class="car-badge">${car.badge}</div>
+                    </div>
+                    <div class="car-details">
+                        <h3 class="car-title">${car.title}</h3>
+                        <div class="car-price">${car.price}</div>
+                        <div class="car-specs">
+                            ${car.specs.map(spec => `
+                                <div class="car-spec">
+                                    <i class="${spec.icon}"></i>
+                                    <span>${spec.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="car-actions">
+                            <button class="btn btn-outline wishlist-btn" style="flex: 1;">
+                                <i class="far fa-heart"></i>
+                                Save
+                            </button>
+                            <button class="btn btn-primary view-details-btn" style="flex: 2;">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                carsGrid.appendChild(carCard);
+            });
+            
+            // Add event listeners to dynamically created buttons
+            setTimeout(() => {
+                const dynamicWishlistBtns = buyPage.querySelectorAll('.wishlist-btn');
+                const dynamicViewDetailsBtns = buyPage.querySelectorAll('.view-details-btn');
+                
+                dynamicWishlistBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const icon = this.querySelector('i');
+                        if (icon.classList.contains('far')) {
+                            icon.classList.replace('far', 'fas');
+                            this.style.color = '#ef4444';
+                        } else {
+                            icon.classList.replace('fas', 'far');
+                            this.style.color = '';
+                        }
+                    });
+                });
+                
+                dynamicViewDetailsBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        detailsModal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    });
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
